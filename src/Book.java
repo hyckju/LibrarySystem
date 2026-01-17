@@ -1,7 +1,7 @@
 public class Book {
     private String title;
     private String author;
-    private final Boolean loan;
+    private Boolean loan;
 
     public Book(String title, String author) {
         this.title = title;
@@ -14,6 +14,9 @@ public class Book {
     public String getAuthor() {return author;}
     public void setAuthor(String author){this.author = author;}
     public Boolean getLoan() {return loan;}
+    public void setLoan(Boolean loan){this.loan = loan;}
+
+    @Override
     public String toString() {
         String status = loan ? "[대출 가능}":"[대출 중]";//클래스 내의 boolean값을 사용자에게 한글로 출력하기 위함
         return "제목: "+title+"저자: "+author;
