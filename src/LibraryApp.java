@@ -4,7 +4,7 @@ public class LibraryApp {
     public static void main(String[] args) {
         try (Scanner sc = new Scanner(System.in)) {
             LoginService loginService = new LoginService();
-            AdminService adminService = new AdminService(sc);
+            AdminService AdminService = new AdminService(sc);
 
             while (true) {
                 System.out.println("=======================================");
@@ -22,12 +22,11 @@ public class LibraryApp {
                 if (user != null) {
                     if (user.isAdmin()) {// 관리자 로그인 성공 시
                         System.out.println(" => 관리자 권한으로 접속되었습니다. (관리자 메뉴로 이동)");
-                        adminService.startAdminMenu();
-                        // 일반 사용자 로그인시 실행 코드 작성
-                    } else {
+                        AdminService.startAdminMenu();
+                    } else {// 일반 사용자 로그인시 실행 코드 작성
                         System.out.println("=> 일반 사용자 \" + user.getId() + \"님, 환영합니다.");
                     }
-                }else {
+                }else {//User가 null이면 로그인 실패 출력
                     System.out.println("[로그인 실패] 아이디 또는 비밀번호가 일치하지 않습니다.");
                 }
             }

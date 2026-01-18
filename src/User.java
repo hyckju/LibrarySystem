@@ -9,14 +9,10 @@ public class User {
         this.isAdmin = isAdmin;
     }
     //상태 변경이 불필요하기 때문에 setter 미사용
-    public String getId() {
-        return ID;
-    }
-
+    public String getId() {return ID;}
     public String getPassword() {
         return Password;
     }
-
     public boolean isAdmin() {
         return isAdmin;
     }
