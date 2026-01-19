@@ -1,17 +1,19 @@
 import java.util.*;
 
 public class AdminService {
-    private final Scanner sc;
-    private final Map<Integer, ArrayList<Object>> bookMap = new HashMap<>();
-    int count = 0;
+    private Scanner sc;
+    //Map을 사용하여 Book클래스의 ID기반 조회 최적화
+    //데이터를 관리자 메뉴 클래스 내부에서 직접관리하여
+    private final Map<Integer, Book> bookMap = new HashMap<>();
+    int count = 0; //book_id 생성용
 
     public AdminService(Scanner sc) {
         this.sc = sc;
         bookInitial();
     }
     private void bookInitial() {//초기 데이터 샘플
-        bookMap.put(++count, new ArrayList<>(Arrays.asList("자바의 정석", "남궁성", true)));
-        bookMap.put(++count, new ArrayList<>(Arrays.asList("어린왕자", "생텍쥐페리", true)));
+        bookMap.put(++count, new Book("자바의 정석", "남궁성", true));
+        bookMap.put(++count, new Book("어린왕자", "생텍쥐페리", true));
     }
 
     // 관리자 메뉴 실행
@@ -53,7 +55,7 @@ public class AdminService {
             //case "4" -> searchBook();
         }
     }
-    private void addBook(){
+    private void addBook(){//도서 등록
         System.out.println("[도서 등록]");
         System.out.print("- 제목 입력 : "); String t = sc.nextLine();
         System.out.print("- 저자 입력 : "); String a = sc.nextLine();
@@ -66,15 +68,13 @@ public class AdminService {
         //count변수를 1씩 증가 시켜 newId 생성
         count++;
         int newId = count;
-        //ArrayList에 제목,저자,대출여부 저장
-        ArrayList<Object> books = new ArrayList<>();
-        books.add(t); //index 0: 제목
-        books.add(a); //index 1: 저자
-        books.add(true); //index 2: 대출여부
-        bookMap.put(newId, books);//Map.out (newId, list)
+        //ArrayList대신 Book객체 생성하여 Map에 저장
+        Book newBook = new Book(t, a, true);
+        bookMap.put(newId, newBook);
+
         System.out.print("[결과] 등록이 완료되었습니다. (도서 ID:"+newId+ ")");
     }
-    private void editOrDelete(){
+    private void editOrDelete(){//도서 수정 및 삭제
         System.out.println("[도서 수정 및 삭제]");
         System.out.print("- 관리할 도서 ID 입력 : ");
         String input = sc.nextLine();
@@ -83,7 +83,7 @@ public class AdminService {
         int id;
         try {
             id = Integer.parseInt(input);//숫자형의 문자열을 정수값으로 변경
-        }catch (InputMismatchException e) {//문자 입력 인식
+        }catch (NumberFormatException e) {//문자 입력 인식
             System.out.print("잘못된 입력입니다. ");
             return;
         }
@@ -91,11 +91,13 @@ public class AdminService {
             System.out.println("존재하지 않는 도서입니다. ");
             return;
         }
-        ArrayList<Object> target = bookMap.get(id);
-        //Book 클래스의 기존 변수를 활용하여 상태값 확인
-        String status = (boolean)target.get(2) ? "비치중" : "대출중";
 
-        System.out.printf("  현재 정보: [%s | %s | %s]\n", target.get(0), target.get(1), status);
+        Book target = bookMap.get(id);
+        //클래스명으로 직접 호출
+        BookViewer.printBookAdmin(target);
+
+        //System.out.printf("  현재 정보: [%s | %s | %s]\n", target.getTitle(), target.getAuthor(), status);
+        //BookViewer에서 이미 처리 하므로 중복 제거
         System.out.println("  1. 제목 수정  2. 저자 수정  3. 도서 삭제  0. 취소");
         System.out.println("----------------------------------------");
         System.out.print("  선택: ");
@@ -104,12 +106,12 @@ public class AdminService {
         switch (subChoice) {
             case "1" -> {
                 System.out.print("  -> 새 제목 입력: ");
-                target.set(0, sc.nextLine());
+                target.setTitle(sc.nextLine());//데이터 저장
                 System.out.println("[결과] 도서 제목이 수정되었습니다.");
             }
             case "2" -> {
                 System.out.print("  -> 새 저자 입력: ");
-                target.set(1, sc.nextLine());
+                target.setAuthor(sc.nextLine());//데이터 저장
                 System.out.println("[결과] 도서 저자가 수정되었습니다.");
             }
             case "3" -> {
@@ -120,14 +122,15 @@ public class AdminService {
             default -> System.out.println("잘못된 입력입니다.");
         }
     }
-    private void showAll() {// 전체 도서 출력 클래스
-        System.out.println("\n[전체 도서 목록]");
+    private void showAll() {// 전체 도서 출력
+        System.out.println("=======================================");
+        System.out.println("\n[도서 목록]");
+        System.out.println("ID  |   제목   |   저자   |   상태");
+        System.out.println("----------------------------------------");
         if (bookMap.isEmpty()) {
             System.out.println("등록된 도서가 없습니다.");
-        } else {
-            for (Integer id : bookMap.keySet()) {
-                System.out.println("ID: " + id + " | " + bookMap.get(id));
-            }
+        }else {
+            bookMap.forEach((id, book) -> BookViewer.printShowAll(id, book));
         }
     }
     private boolean confirmExit(){

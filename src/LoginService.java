@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
-
+//입출력 상호작용
 public class LoginService {
     private final List<User> users = new ArrayList<>();
 

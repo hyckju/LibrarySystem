@@ -2,8 +2,8 @@ public class Book {
     private String title;
     private String author;
     private Boolean loan;
-
-    public Book(String title, String author) {
+    //책 정보 저장
+    public Book(String title, String author, Boolean loan) {
         this.title = title;
         this.author = author;
         this.loan = true;
@@ -13,13 +13,7 @@ public class Book {
     public void setTitle(String title){this.title = title;}
     public String getAuthor() {return author;}
     public void setAuthor(String author){this.author = author;}
-    public Boolean getLoan() {return loan;}
+    public Boolean isLoan() {return loan;}
     public void setLoan(Boolean loan){this.loan = loan;}
 
-    @Override
-    public String toString() {
-        String status = loan ? "[대출 가능}":"[대출 중]";//클래스 내의 boolean값을 사용자에게 한글로 출력하기 위함
-        return "제목: "+title+"저자: "+author;
-
-    }
 }
